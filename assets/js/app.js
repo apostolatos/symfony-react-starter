@@ -31,6 +31,8 @@ class App extends React.Component {
             endDate: '',
             endDateError: '',
             email: '',
+            emailError: '',
+            loader: false,
             quotes: [],
             labels: [],
             openPrices: [],
@@ -69,21 +71,17 @@ class App extends React.Component {
             body: JSON.stringify({ 
                 symbol: this.state.companySymbol,
                 startDate: this.state.startDate,
-                endDate: this.state.endDate
+                endDate: this.state.endDate,
+                email: this.state.email
             })
         };
         fetch('validate', requestOptions)
             .then(response => response.json())
             .then(response => {
-                this.setState({
-                    companySymbolError: ''
-                })
-                this.setState({
-                    startDateError: ''
-                })
-                this.setState({
-                    endDateError: ''
-                })
+                this.setState({companySymbolError: ''})
+                this.setState({startDateError: ''})
+                this.setState({endDateError: ''})
+                this.setState({emailError: ''})
 
                 // check validation errors
                 if (response.statusCode != 200) {
@@ -102,10 +100,14 @@ class App extends React.Component {
                             endDateError: response.endDate
                         })
                     }
+                    if (typeof response.email != 'undefined') {
+                        this.setState({
+                            emailError: response.email
+                        })
+                    }
                 }
                 else {
-                    alert(1);
-                    return false;
+                    this.setState({loader: true})
 
                     var url = 'https://www.quandl.com/api/v3/datasets/WIKI/'
                         +this.state.companySymbol+'.json?order=asc&amp;start_date='+this.state.startDate
@@ -115,6 +117,8 @@ class App extends React.Component {
                         .then(response => response.json())
                         .then(entries => {
                             var quotes = entries.dataset.data;
+
+                            this.setState({loader: false})
 
                             for (var i in quotes) {
                                 this.setState({
@@ -143,6 +147,10 @@ class App extends React.Component {
         if (!this.state.submitted) {
             return (
                 <div className="col-md-6">
+                    {this.state.loader ?
+                        <div class="loader"></div>
+                        : ''
+                    }
                     <div className="card">
                         <div className="card-body">
                             <form onSubmit={this.handleSubmit}>
@@ -182,6 +190,7 @@ class App extends React.Component {
                                         value={this.state.email} 
                                         onChange={this.handleEmailChange}
                                     />
+                                    <span className="text-danger">{this.state.emailError}</span>
                                 </div>
                                 <button type="submit" className="btn btn-primary">Submit</button>
                             </form>

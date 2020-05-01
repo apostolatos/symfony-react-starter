@@ -53,6 +53,7 @@ class DefaultController extends AbstractController
 
         $content = json_decode($request->getContent());
 
+        // company symbol validation
         if (! $content->symbol) {
             $errors['symbol'] = 'Symbol is required';
         } 
@@ -68,6 +69,7 @@ class DefaultController extends AbstractController
             }
         }
 
+        // start date validation
         if (! $content->startDate) {
             $errors['startDate'] = 'Start Date is required';
         }
@@ -77,6 +79,7 @@ class DefaultController extends AbstractController
             }
         }
 
+        // end date validation
         if (! $content->endDate) {
             $errors['endDate'] = 'End Date is required';
         }
@@ -86,6 +89,21 @@ class DefaultController extends AbstractController
             }
         }
 
+        // email validation
+        if (! $content->email) {
+            $errors['email'] = 'Email is required';
+        }
+        else {
+            if (!preg_match("/[a-zA-Z0-9_\-.+]+@[a-zA-Z0-9-]+.[a-zA-Z]+/", $content->email)) {
+                $errors['email'] = 'Email wrong format';
+            }
+        }
+
+        if (date('U', strtotime($content->endDate)) - date('U', strtotime($content->startDate)) < 0) {
+            $errors['startDate'] = 'End Date must be after start Date';
+        }
+
+        // check for errors
         if ($errors) {
             $errors['statusCode'] = 404;
 
