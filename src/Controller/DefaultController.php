@@ -11,6 +11,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+
 class DefaultController extends AbstractController
 {
     /**
@@ -48,9 +51,7 @@ class DefaultController extends AbstractController
      */
     public function validate(Request $request)
     {   
-        $data = $request->request->all();
         $errors = [];
-
         $content = json_decode($request->getContent());
 
         // company symbol validation
@@ -114,14 +115,30 @@ class DefaultController extends AbstractController
     }
     
     /**
-     * @Route("/send/{symbol}", name="send")
+     * @Route("/send/{email}", name="send")
      */
-    public function send($email)
+    public function send(MailerInterface $mailer, Request $request)
     {   
+        $data = $request->request->all();
+
+        $content = json_decode($request->getContent());
+
+        $email = (new Email())
+            ->from('dimitris.apostolatos@gmail.com')
+            ->to($content->email)
+            ->subject($content->symbol)
+            ->text('')
+            ->html('<p>'.$content->startDate.' - '.$content->endDate.'</p>');
+
+        $mailer->send($email);
         
-        if (!$symbol) {
-            return new Response('Not found', 404);
-        }
-    }
-    
+        return new Response(
+            'Email was sent'
+        );
+
+        // Send the message
+        // $numSent = $mailer->send($message);
+
+        return new Response('Email was sent');
+    }   
 }

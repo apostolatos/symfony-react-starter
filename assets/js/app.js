@@ -113,6 +113,7 @@ class App extends React.Component {
                         +this.state.companySymbol+'.json?order=asc&amp;start_date='+this.state.startDate
                         +'&amp;end_date='+this.state.endDate+'&api_key=iDWmbL8gkNcE4jEakZVu';
 
+                    // get results
                     fetch(url)
                         .then(response => response.json())
                         .then(entries => {
@@ -139,6 +140,11 @@ class App extends React.Component {
                                 quotes
                             });
                         });
+
+                    // send mail
+                    fetch('send/mail', requestOptions)
+                        .then(response => response.json())
+                        .then(response => {})
                 }
             })
     }
@@ -148,7 +154,7 @@ class App extends React.Component {
             return (
                 <div className="col-md-6">
                     {this.state.loader ?
-                        <div class="loader"></div>
+                        <div className="loader"></div>
                         : ''
                     }
                     <form onSubmit={this.handleSubmit}>
