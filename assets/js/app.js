@@ -16,43 +16,247 @@ console.log('Hello Webpack Encore! Edit me in assets/js/app.js');
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Items from './Components/Items';
+import {Bar} from 'react-chartjs-2';
 
 class App extends React.Component {
-    constructor() {
-        super();
-
+    constructor(props) {
+        super(props);
+        
         this.state = {
-            entries: []
+            submitted: false,
+            companySymbol: '',
+            companySymbolError: '',
+            startDate: '',
+            startDateError: '',
+            endDate: '',
+            endDateError: '',
+            email: '',
+            quotes: [],
+            labels: [],
+            openPrices: [],
+            closePrices: []
         };
+  
+        this.handleCompanySymbolChange = this.handleCompanySymbolChange.bind(this);
+        this.handleStartDateChange = this.handleStartDateChange.bind(this);
+        this.handleEndDateChange = this.handleEndDateChange.bind(this);
+        this.handleEmailChange = this.handleEmailChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+  
+    handleCompanySymbolChange(event) {
+        this.setState({companySymbol: event.target.value});
     }
 
-    componentDidMount() {
-        fetch('https://jsonplaceholder.typicode.com/posts/')
+    handleStartDateChange(event) {
+        this.setState({startDate: event.target.value});
+    }
+
+    handleEndDateChange(event) {
+        this.setState({endDate: event.target.value});
+    }
+
+    handleEmailChange(event) {
+        this.setState({email: event.target.value});
+    }
+  
+    handleSubmit(event) {
+        event.preventDefault();
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                symbol: this.state.companySymbol,
+                startDate: this.state.startDate,
+                endDate: this.state.endDate
+            })
+        };
+        fetch('validate', requestOptions)
             .then(response => response.json())
-            .then(entries => {
+            .then(response => {
                 this.setState({
-                    entries
-                });
-            });
-    }
+                    companySymbolError: ''
+                })
+                this.setState({
+                    startDateError: ''
+                })
+                this.setState({
+                    endDateError: ''
+                })
 
+                // check validation errors
+                if (response.statusCode != 200) {
+                    if (typeof response.symbol != 'undefined') {
+                        this.setState({
+                            companySymbolError: response.symbol
+                        })
+                    }
+                    if (typeof response.startDate != 'undefined') {
+                        this.setState({
+                            startDateError: response.startDate
+                        })
+                    }
+                    if (typeof response.endDate != 'undefined') {
+                        this.setState({
+                            endDateError: response.endDate
+                        })
+                    }
+                }
+                else {
+                    alert(1);
+                    return false;
+
+                    var url = 'https://www.quandl.com/api/v3/datasets/WIKI/'
+                        +this.state.companySymbol+'.json?order=asc&amp;start_date='+this.state.startDate
+                        +'&amp;end_date='+this.state.endDate+'&api_key=iDWmbL8gkNcE4jEakZVu';
+
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(entries => {
+                            var quotes = entries.dataset.data;
+
+                            for (var i in quotes) {
+                                this.setState({
+                                    labels: this.state.labels.concat(quotes[i][0])
+                                })
+                                this.setState({
+                                    openPrices: this.state.openPrices.concat(quotes[i][1])
+                                })
+                                this.setState({
+                                    closePrices: this.state.closePrices.concat(quotes[i][4])
+                                })
+                            }
+
+                            this.setState({
+                                submitted: true
+                            });
+                            this.setState({
+                                quotes
+                            });
+                        });
+                }
+            })
+    }
+    
     render() {
-        return (
-            <div className="row">
-                {this.state.entries.map(
-                    ({ id, title, body }) => (
-                        <Items
-                            key={id}
-                            title={title}
-                            body={body}
-                        >
-                        </Items>
-                    )
-                )}
-            </div>
-        );
+        if (!this.state.submitted) {
+            return (
+                <div className="col-md-6">
+                    <div className="card">
+                        <div className="card-body">
+                            <form onSubmit={this.handleSubmit}>
+                                <div className="form-group">
+                                    <label>Company Symbol</label>
+                                    <input className="form-control" 
+                                        type="text" 
+                                        value={this.state.companySymbol} 
+                                        onChange={this.handleCompanySymbolChange} 
+                                    />
+                                    <span className="text-danger">{this.state.companySymbolError}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label>Start Date</label>
+                                    <input className="form-control"
+                                        placeholder="YYYY-mm-dd"
+                                        type="text" 
+                                        value={this.state.startDate} 
+                                        onChange={this.handleStartDateChange}
+                                    />
+                                    <span className="text-danger">{this.state.startDateError}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label>End Date</label>
+                                    <input className="form-control" 
+                                        placeholder="YYYY-mm-dd"
+                                        type="text" 
+                                        value={this.state.endDate} 
+                                        onChange={this.handleEndDateChange}
+                                    />
+                                    <span className="text-danger">{this.state.endDateError}</span>
+                                </div>
+                                <div className="form-group">
+                                    <label>Email</label>
+                                    <input className="form-control" 
+                                        type="text" 
+                                        value={this.state.email} 
+                                        onChange={this.handleEmailChange}
+                                    />
+                                </div>
+                                <button type="submit" className="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        else {
+            let rows = this.state.quotes.map((data, i) => {
+                var cols = [];
+                for (var c = 0; c < 6; c++) {
+                    cols.push(<td key={c}>{data[c]}</td>)
+                }
+                return(
+                    <tr key={i}>
+                        {cols}
+                    </tr>
+                ) 
+            });
+
+            return (
+                <div className="col-md-10">
+                    <table className="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Open</th>
+                                <th>High</th>
+                                <th>Low</th>
+                                <th>Close</th>
+                                <th>Volume</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows}
+                        </tbody>
+                    </table>
+
+                    <Bar
+                        data={{
+                            labels: this.state.labels,
+                            datasets: [
+                                {
+                                    label: 'Open Prices',
+                                    backgroundColor: 'rgba(75,192,192,1)',
+                                    borderColor: 'rgba(0,0,0,1)',
+                                    borderWidth: 1,
+                                    data: this.state.openPrices
+                                },
+                                {
+                                    label: 'Close Prices',
+                                    backgroundColor: 'rgba(75,192,192,1)',
+                                    borderColor: 'rgba(0,0,0,1)',
+                                    borderWidth: 1,
+                                    data: this.state.closePrices
+                                }
+                            ]
+                        }}
+                        options={{
+                            title:{
+                                display:true,
+                                text:'Average Rainfall per month',
+                                fontSize:20
+                            },
+                            legend:{
+                                display:true,
+                                position:'right'
+                            }
+                        }}
+                    />
+                </div>
+            )
+        }
     }
 }
-
+  
 ReactDOM.render(<App />, document.getElementById('root'));

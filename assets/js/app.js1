@@ -1,0 +1,161 @@
+/*
+ * Welcome to your app's main JavaScript file!
+ *
+ * We recommend including the built version of this JavaScript file
+ * (and its CSS file) in your base layout (base.html.twig).
+ */
+
+// any CSS you import will output into a single css file (app.css in this case)
+import '../css/app.css';
+
+// Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
+// import $ from 'jquery';
+
+console.log('Hello Webpack Encore! Edit me in assets/js/app.js');
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import Items from './Components/Items';
+
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+// CSS Modules, react-datepicker-cssmodules.css
+// import 'react-datepicker/dist/react-datepicker-cssmodules.css';
+
+import Moment from 'moment';
+
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            entries: [],
+            companySymbol: '',
+        };
+
+        this.handleCompanySymbolChange = this.handleStartDateChange.bind(this)
+        //this.handleStartDateChange = this.handleStartDateChange.bind(this)
+        //this.handleEndDateChange = this.handleEndDateChange.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleSubmit(event) {
+        alert('A name was submitted: ' + this.state.companySymbol);
+        event.preventDefault();
+    }
+
+    handleCompanySymbolChange(event) {
+        this.setState({companySymbol: event.target.value});
+    }
+
+    handleStartDateChange(date) {
+        /*
+        this.setState({
+            startDate: date
+        });
+        */
+
+        var dateReg = /^\d{4}([./-])\d{2}\1\d{2}$/
+        if (!date) {
+            this.setState({
+                startDateError: 'Date is required'
+            })
+        }
+        else {
+            this.setState({
+                startDateError: ''
+            })
+        }
+    }
+
+    handleEndDateChange(date) {
+        this.setState({
+            endDate: date
+        });
+    }
+
+    componentDidMount() {
+        fetch('https://jsonplaceholder.typicode.com/posts/')
+            .then(response => response.json())
+            .then(entries => {
+                this.setState({
+                    entries
+                });
+            });
+    }
+
+    render() {
+
+        return (
+                <div className="card">
+                    <div className="card-body">
+                        <form onSubmit={this.handleSubmit}>
+                            <div className="form-group">
+                                <label>Company Symbol</label>
+                                <input 
+                                    onChange={this.handleCompanySymbolChange}
+                                    value={this.state.companySymbol}
+                                    name="companySymbol"
+                                    type="text" 
+                                    className="form-control"
+                                />
+                            </div>
+                            <div className={'form-group ' + (this.state.startDateError ? 'has-error' : '')}>
+                                <label>Start Date</label>
+                                <input 
+                                    type="text" 
+                                    placeholder="(YYYY-mm-dd)"
+                                    selected={this.state.startDate}
+                                    onChange={this.handleStartDateChange}
+                                    className="form-control"
+                                />
+                                <span className="help-block">
+                                    {this.state.startDateError}
+                                </span>
+                            </div>
+                            <div className="form-group">
+                                <label>End Date</label>
+                                <DatePicker
+                                    placeholder="(YYYY-mm-dd)" 
+                                    selected={this.state.endDate}
+                                    onChange={this.handleEndDateChange}
+                                    className="form-control"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Email</label>
+                                <input 
+                                    id="email" 
+                                    type="email" 
+                                    className="form-control"
+                                />
+                            </div>
+                            <button type="submit" className="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            
+        );
+        
+        /*
+        return (
+            <div className="row">
+                {this.state.entries.map(
+                    ({ id, title, body }) => (
+                        <Items
+                            key={id}
+                            title={title}
+                            body={body}
+                        >
+                        </Items>
+                    )
+                )}
+            </div>
+        );
+        */
+    }
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));

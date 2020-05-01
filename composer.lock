@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f0d47e7fd07bdf9591b3603d9fee6e19",
+    "content-hash": "de02a180a070ede9920e1a4adaef516e",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1919,6 +1919,50 @@
                 "controllers"
             ],
             "time": "2020-04-06T12:20:39+00:00"
+        },
+        {
+            "name": "sonrac/symfony-seed-command",
+            "version": "1.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sonrac/symfony-seed-command.git",
+                "reference": "9870f3176817048785e2b1994acc99a0de39ec8c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sonrac/symfony-seed-command/zipball/9870f3176817048785e2b1994acc99a0de39ec8c",
+                "reference": "9870f3176817048785e2b1994acc99a0de39ec8c",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/dbal": ">=2.2.0",
+                "ext-json": "*",
+                "php": ">=5.5",
+                "symfony/console": ">=2.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=4.8",
+                "refinery29/php-cs-fixer-config": "*",
+                "squizlabs/php_codesniffer": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "sonrac\\SimpleSeed\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sergii Donii",
+                    "email": "doniysa@gmail.com"
+                }
+            ],
+            "description": "Symfony simple seed command",
+            "time": "2020-04-01T00:25:46+00:00"
         },
         {
             "name": "symfony/asset",

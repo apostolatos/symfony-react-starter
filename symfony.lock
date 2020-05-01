@@ -94,7 +94,7 @@
         "version": "2.2.3"
     },
     "php": {
-        "version": "7.3"
+        "version": "7.4"
     },
     "phpdocumentor/reflection-common": {
         "version": "2.1.0"
@@ -131,6 +131,9 @@
         "files": [
             "./config/packages/sensio_framework_extra.yaml"
         ]
+    },
+    "sonrac/symfony-seed-command": {
+        "version": "1.7"
     },
     "symfony/asset": {
         "version": "v5.0.8"
