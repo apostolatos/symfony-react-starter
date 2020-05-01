@@ -151,9 +151,10 @@ class App extends React.Component {
                         <div class="loader"></div>
                         : ''
                     }
-                    <div className="card">
-                        <div className="card-body">
-                            <form onSubmit={this.handleSubmit}>
+                    <form onSubmit={this.handleSubmit}>
+                        <div className="card" style={{ margin: '0 0 20px 0' }}>
+                            <div className="card-body">
+                                
                                 <div className="form-group">
                                     <label>Company Symbol</label>
                                     <input className="form-control" 
@@ -192,10 +193,12 @@ class App extends React.Component {
                                     />
                                     <span className="text-danger">{this.state.emailError}</span>
                                 </div>
-                                <button type="submit" className="btn btn-primary">Submit</button>
-                            </form>
+                            </div>
                         </div>
-                    </div>
+                        <div style={{ padding: '0 1.25rem' }}>
+                            <button type="submit" className="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
                 </div>
             );
         }
@@ -214,54 +217,61 @@ class App extends React.Component {
 
             return (
                 <div className="col-md-10">
-                    <table className="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Open</th>
-                                <th>High</th>
-                                <th>Low</th>
-                                <th>Close</th>
-                                <th>Volume</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {rows}
-                        </tbody>
-                    </table>
-
-                    <Bar
-                        data={{
-                            labels: this.state.labels,
-                            datasets: [
-                                {
-                                    label: 'Open Prices',
-                                    backgroundColor: 'rgba(75,192,192,1)',
-                                    borderColor: 'rgba(0,0,0,1)',
-                                    borderWidth: 1,
-                                    data: this.state.openPrices
-                                },
-                                {
-                                    label: 'Close Prices',
-                                    backgroundColor: 'rgba(75,192,192,1)',
-                                    borderColor: 'rgba(0,0,0,1)',
-                                    borderWidth: 1,
-                                    data: this.state.closePrices
-                                }
-                            ]
-                        }}
-                        options={{
-                            title:{
-                                display:true,
-                                text:'Average Rainfall per month',
-                                fontSize:20
-                            },
-                            legend:{
-                                display:true,
-                                position:'right'
-                            }
-                        }}
-                    />
+                    <div className="card" style={{ margin: '0 0 20px 0' }}>
+                        <div className="card-body">
+                            <table className="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Open</th>
+                                        <th>High</th>
+                                        <th>Low</th>
+                                        <th>Close</th>
+                                        <th>Volume</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {rows}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div className="card">
+                        <div className="card-body">
+                            <Bar
+                                data={{
+                                    labels: this.state.labels,
+                                    datasets: [
+                                        {
+                                            label: 'Open Prices',
+                                            backgroundColor: 'rgba(75,192,192,1)',
+                                            borderColor: 'rgba(0,0,0,1)',
+                                            borderWidth: 1,
+                                            data: this.state.openPrices
+                                        },
+                                        {
+                                            label: 'Close Prices',
+                                            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                                            borderColor: 'rgba(0, 0, 0, 0.1)',
+                                            borderWidth: 1,
+                                            data: this.state.closePrices
+                                        }
+                                    ]
+                                }}
+                                options={{
+                                    title:{
+                                        display:true,
+                                        text:'Open and Close prices',
+                                        fontSize: 20
+                                    },
+                                    legend:{
+                                        display:true,
+                                        position:'bottom'
+                                    }
+                                }}
+                            />
+                        </div>
+                    </div>
                 </div>
             )
         }

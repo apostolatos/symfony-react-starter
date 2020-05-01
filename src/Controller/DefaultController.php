@@ -113,4 +113,15 @@ class DefaultController extends AbstractController
         return new JsonResponse(['statusCode' => 200], 200);
     }
     
+    /**
+     * @Route("/send/{symbol}", name="send")
+     */
+    public function send($email)
+    {   
+        
+        if (!$symbol) {
+            return new Response('Not found', 404);
+        }
+    }
+    
 }
