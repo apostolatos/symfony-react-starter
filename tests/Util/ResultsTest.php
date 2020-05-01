@@ -13,7 +13,7 @@ class ResultsTest extends TestCase
 
         $statusCode = $api->call('AAPL', '2003-01-01', '2003-03-06');
 
-        // assert that your calculator added the numbers correctly!
+        // assert that your api call result correctly!
         $this->assertEquals(200, $statusCode);
     }
 }
