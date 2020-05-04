@@ -32,9 +32,11 @@ Configure your email settings below:
 
 `MAILER_DSN=smtp://{email}:{password}@smtp.gmail.com:587/?encryption=tls&auth_mode=login`
 
-Once the database is created, run the following console command to install tables.
+Once the database is created, run the following console commands to install tables.
 
 `php bin/console make:migration`
+
+`php bin/console doctrine:migrations:migrate`
 
 Our database is all set!
 
