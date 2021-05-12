@@ -19,7 +19,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
-        "chart.js": "^2.9.3",
+        "chart.js": "^2.9.4",
         "moment": "^2.24.0",
         "react-chartjs-2": "^2.9.0",
         "react-charts": "^2.0.0-beta.6",
